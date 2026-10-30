@@ -1,0 +1,7 @@
+# NEVER commit secrets
+*.private
+*.key
+*.pem
+*.env
+*.bak
+.env*

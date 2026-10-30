@@ -1,0 +1,21 @@
+server {
+    listen 80;
+    server_name mail.alilinux.ir;
+    location /.well-known/acme-challenge/ { root /var/www/html; }
+    location / { return 301 https://$host$request_uri; }
+}
+server {
+    listen 443 ssl;
+    http2 on;
+    server_name mail.alilinux.ir;
+    ssl_certificate     /etc/letsencrypt/live/mail.alilinux.ir/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/mail.alilinux.ir/privkey.pem;
+    root /usr/share/roundcube;
+    index index.php;
+    location / { try_files $uri $uri/ /index.php?$args; }
+    location ~ ^/(config|temp|logs|SQL|bin|installer|vendor)/ { deny all; }
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/run/php/php-fpm.sock;
+    }
+}
